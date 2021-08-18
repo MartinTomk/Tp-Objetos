@@ -1,0 +1,83 @@
+import mensajeros.*
+
+test "Roberto puede entregar paquete si (PesoTotal (Vehiculo+Roberto) <= 1000 y paquete = pago)" {
+	
+	roberto.vehiculo(camion)
+	camion.cantidadAcoplados(1)
+	paqueteOriginal.estaPago(true)
+	
+	assert.that(roberto.puedeEntregar(paqueteOriginal) || roberto.puedeEntregar(paqueteOriginal))
+
+}
+test "Neo no puede entregar paquete si el paquete no esta pago y credito > 0" {
+	
+	neo.credito(true)
+	paqueteOriginal.estaPago(false)
+	
+	assert.notThat(neo.puedeEntregar(paqueteOriginal))
+
+}
+/* Parte 2 */
+
+test "Mensajeria es grande cuando hay mas de dos mensajeros" {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	empresaMensajeria.contratarMensajero(hermes)
+	empresaMensajeria.contratarMensajero(neo)
+	assert.that(empresaMensajeria.mensajeriaGrande())
+	
+}
+
+
+test "El peso del ultimo mensajero es igual al peso del ultimo mensajero contratado " {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	empresaMensajeria.contratarMensajero(neo)
+	assert.equals(empresaMensajeria.pesoUltimoMensajero(),neo.peso())
+}
+/* (a) La empresa puede enviar un paquete dado */
+test "La empresa puede entregar un paquete si un mensajero puede entregarlo " {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	empresaMensajeria.contratarMensajero(neo)
+	assert.equals(empresaMensajeria.esPosibleEntregar(paqueteOriginal), chuckNorris.puedeEntregar(paqueteOriginal))
+}
+
+/*(b) Que mensajeros pueden enviar un paquete */
+test "Verificar que los mensajeros que pueden entregar el paquete realmente puedan" {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	empresaMensajeria.contratarMensajero(neo)
+	assert.equals(empresaMensajeria.puedenEntregar(paquetito),empresaMensajeria.listaMensajeros())
+}
+/*(c) Saber si la mensajeria tiene sobrepeso */
+test "Tiene sobrepeso cuando el promedio del peso excede los 500" {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	assert.that(empresaMensajeria.tieneSobrepeso())
+	
+}
+/* (d) Enviar Paquete */
+/* Este test ya no tiene sentido al modificar ENVIAR()
+test "El paquete es enviado por un mensajero que pueda enviarlo " {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	assert.equals(empresaMensajeria.enviar(paquetito),chuckNorris)
+}
+*/
+test "El paquete no es enviado y se agrega a pendientes " {
+	empresaMensajeria.contratarMensajero(roberto)
+	empresaMensajeria.enviar(paqueteMisterioso)
+	assert.that(empresaMensajeria.paquetesPendientes().contains(paqueteMisterioso))
+}
+/*(e) Una lista de paquetes es enviada */
+test "Todos los paquetes son enviados" {
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	empresaMensajeria.enviarTodos([paquetito,paqueteOriginal,paqueteMisterioso])
+	assert.equals(empresaMensajeria.paquetesPendientes(),[])
+}
+/* (f) El paquete pendiente mas caro es enviado */
+test "El paquete pendiente mas caro es enviado " {
+	/*Precio.paqueteOriginal > Precio.paquetito */
+	empresaMensajeria.enviar(paqueteOriginal)
+	empresaMensajeria.enviar(paquetito)
+	/*Como no hay mensajeros los paquetes se agregaron a la lista de pendientes */
+	empresaMensajeria.contratarMensajero(chuckNorris)
+	empresaMensajeria.paquetePendienteMasCaro()
+	assert.notThat(empresaMensajeria.paquetesPendientes().contains(paqueteOriginal))
+}
+/*g En algunos test use el paquete nuevo y el mensajero nuevo */
